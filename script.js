@@ -81,6 +81,7 @@ let dt1 = viz.append('text')
 .attr('y',padding/2)
 .attr('class','discription')
 ;
+
 let dt2 = viz.append('text')
 .text('')
 .attr('x',w/2)
@@ -93,7 +94,13 @@ let dt3 = viz.append('text')
 .attr('y',padding/2)
 .attr('class','discription')
 ;
+
 let dt4 = viz.append('text')
+.text('')
+.attr('x',w/2)
+.attr('y',padding/2)
+.attr('class','discription');
+let dt6 = viz.append('text')
 .text('')
 .attr('x',w/2)
 .attr('y',padding/2)
@@ -105,10 +112,30 @@ let dt5 = viz.append('text')
 .attr('fill','white')
 
 ;
+let projectionI = d3.geoAzimuthalEqualArea()
+  .translate([w/2,h/2])
+  .fitExtent([[0,0],[w/2,h-200]],geoData)
+
+let pathMakerI = d3.geoPath(projectionI);
+let
+moonMapI=viz.selectAll(".map2").data(geoData.features).enter()
+
+.append("path")
+
+  .attr("class", "map2")
+  .attr("d", pathMakerI)
+  //.transition()
+  .attr('fill','none')
+  .attr('stroke','none')
+  //alldata.duration(200)
+
+
+  ;
+
 
     let projection = d3.geoAzimuthalEqualArea()
       .translate([w/2,h/2])
-      .fitExtent([[0,0],[w-padding-90,h-200]],geoData)
+      .fitExtent([[0,0],[w-padding+10,h-200]],geoData)
 
     let pathMaker = d3.geoPath(projection);
     let
@@ -118,14 +145,15 @@ let dt5 = viz.append('text')
 
       .attr("class", "map")
       .attr("d", pathMaker)
-      .attr('stroke','white')
       .attr('fill','none')
+      .attr('stroke','white')
+
 
       ;
 
   function circleX(d,i){
     r=Math.floor(i/24)
-    x=820+r*25
+    x=1050+r*25
     return x
 
   }
@@ -145,17 +173,18 @@ let dt5 = viz.append('text')
     .attr('class','alldata')
       .attr('cx',circleX)
       .attr('cy',circleY)
-      .attr('r',4)
-      .attr('fill','none');
+      .attr('r',0)
+      //.attr('fill','none');
 
   function checkCount(d,i){
     if (count==0){
       textElement
           .text("<<<This project intends to illustrate the US's devotion to the Moon landing cause and the tension of the Moon Race by visualizing the The TR R 277 reports.>>>")
-          .attr('x',w/5)
+          .attr('x',w/10)
           .attr('y',h-100)
           .attr('class','t')
           .attr('fill','white')
+
       ;
      textElementII
           .text("[Click here to know more...]")
@@ -214,10 +243,15 @@ let dt5 = viz.append('text')
       textElement
        .transition()
 
-        .attr('x',200)
-        .text("<<<During the Cold War, there is a historic event called the \"Space Race\". It's the competition between the Soviet Union and the United States to achieve first in spaceflight capability as a means to show off military power.>>>");
+        .attr('x',w/40)
+        .attr('font-size',25)
+        .text("During the Cold War, there is a historic event called the \"Space Race\". It's the competition between the Soviet Union and the United States to achieve first in spaceflight capability as a means to show off military power.");
         moonMap
+        .transition()
+        .attr("d",pathMaker)
         .attr('fill','grey')
+        .attr('stroke','white')
+        .duration(1000);
 
     }
     else if (count == 2){
@@ -225,11 +259,13 @@ let dt5 = viz.append('text')
     .transition()
     .attr('x',0)
 
-    .text('<<<Both parties had invested a huge amount of resource in the Space Race. This project intends to interpret the TR R-277,  also known as the Chronological Catalog of Reported Lunar Events released in 1968, with its historical background during the Cold War. The map above indicates the coverage of all the reports.>>>')
+    .text('Both parties had invested a huge amount of resource in the Space Race. This project intends to interpret the TR R-277,  also known as the Chronological Catalog of Reported Lunar Events, with its historical background during the Cold War.')
     .duration(500)
     ;
 
     moonMap
+    .transition()
+    .attr("d",pathMaker)
     .attr('stroke',function(d,i){
       //console.log(d.properties)
 
@@ -267,10 +303,20 @@ let dt5 = viz.append('text')
         return "grey"
       }
     })
+    .duration(1200)
 
     ;
 }
 else if (count == 3){
+  dt6.text('');
+  moonMap
+  .transition()
+  .attr("d",pathMaker)
+  .attr('fill','grey')
+  .attr('stroke','white')
+  .duration(1200)
+
+  ;
   dt1.text('')
   dt2.text('')
   dt3.text('')
@@ -279,9 +325,9 @@ else if (count == 3){
   .attr('stroke','none');
      textElement
        .transition()
-       .attr('x',185)
+       .attr('x',w/500)
        //.duration(500)
-       .text('<<<The TR R-277 was at that time the single most complete report of all observed lunar anomalies. It lists of 536 pieces of records from 1500 till 1967. You may check how the coverage of the reports differs at different period of time here.>>>');
+       .text('The TR R-277 was at that time the single most complete report of all observed lunar anomalies. It lists of 536 pieces of records from 1500 till 1967. You may check how the coverage of the reports differs at different period of time. ');
      t1=viz.append('text')
      .text('1920s')
      .attr('x',w/4+300)
@@ -289,6 +335,8 @@ else if (count == 3){
      .attr('fill','white')
      .on('click',function(d,i){
        moonMap
+       .transition()
+       .attr("d",pathMaker)
 
        .attr('stroke','white')
        .attr('stroke',function(d,i){
@@ -307,7 +355,7 @@ else if (count == 3){
                return "white"
              }
            })
-      .transition()
+
        .attr('fill',function(d,i){
          //console.log(d.properties)
          let correspondingDatapoint = incomingData.find(function(datapoint){
@@ -324,7 +372,9 @@ else if (count == 3){
            return "grey"
          }
        })
+       .duration(1000)
    })
+
    .on('mouseover',function(d,i){
      t1.
      attr('fill',"red")
@@ -336,7 +386,7 @@ else if (count == 3){
      ;
      t2=viz.append('text')
      .text('1940s')
-     .attr('x',w/4+630)
+     .attr('x',w/4+730)
      .attr('y',20)
      .attr('fill','white')
      .on('click',function(d,i){
@@ -442,7 +492,7 @@ else if (count == 3){
      ;
      t3=viz.append('text')
      .text('1960s')
-     .attr('x',w/4+930)
+     .attr('x',w/4+1030)
      .attr('y',20)
      .attr('fill','white')
      .on('click',function(d,i){
@@ -493,17 +543,32 @@ else if (count == 3){
    })
      ;
 
-
+     try {
+       moonMapI.attr('fill','none')
+       .attr('stroke','none')
+    } catch (error) {
+    console.log('lol')
+    }
    }
    else if (count == 4){
-    moonMap
+     dt6.text('Move your mouse on these circles to learn more.')
+ .attr('x',1075)
+ .attr('y',800)
+ .attr('font-size',40)
+ .attr('fill','white');
+    moonMapI
     .attr('fill','grey')
-    .attr('stroke','white');
+    .attr('stroke','white')
+
+
+    moonMap
+    .attr('fill','none')
+    .attr('stroke','none');
   textElement
     .transition()
     .attr('x',0)
     .duration(500)
-    .text('<<On the map above, the red circles represent records that were made during the Cold War. You can see that among all 536 pieces of records that covered about 500 years reports, more than half of them were created during the Cold War. You may move your mouse on these circles to learn more.>>');
+    .text('On the map above, the red circles represent records that were made during the Cold War. You can see that among all 536 pieces of records that covered about 500 years reports, more than half of them were created during the Cold War. ');
  t1
  .remove();
  t2
@@ -523,6 +588,10 @@ console.log('lol')
 
 
     alldata
+    .transition()
+    .attr('r',4)
+
+    .duration(800)
 
     .attr('fill','white')
     .attr('stroke',function(d,i){
@@ -535,22 +604,28 @@ console.log('lol')
     })
 
     .attr('stroke-width',2)
+  //  .delay(1000)
+
+    ;
+    moonMap.attr('fill','none')
+    .attr('stroke','none');
+    alldata
 
     .on('mouseover',function(d,i){
       dt1
       .text(d.Year)
-      .attr('x',w/4+1000)
-      .attr('y',360)
+      .attr('x',w-750)
+      .attr('y',h/20+250)
       .attr('fill','white');
       let lo=d.Location;
       //console.log(lo);
-      alldata.attr('opacity',0.4)
-      d3.select(this)
-      // .attr('r',6)
-      .attr('opacity',1);
+      // alldata.attr('opacity',0.4)
+      // d3.select(this)
+      // // .attr('r',6)
+      // .attr('opacity',1);
 
 
-    moonMap
+    moonMapI
     .attr('stroke','white')
     .attr('stroke',function(d,i){
       //console.log(d.properties)
@@ -602,22 +677,23 @@ console.log('lol')
     });
 
 
+
       dt2
       .text('Location: '+d.Location)
-      .attr('x',w/4+1000)
-      .attr('y',430)
+      .attr('x',w-750)
+      .attr('y',h/20+300)
       .attr('fill','white');
 
       dt3
       .text('Description: '+d.Description)
-      .attr('x',w/4+1000)
-      .attr('y',520)
+      .attr('x',w-750)
+      .attr('y',h/20+350)
       .attr('fill','white');
 
       dt4
       .text('Credit: '+d.Credit)
-      .attr('x',w/4+1000)
-      .attr('y',600)
+      .attr('x',w-750)
+      .attr('y',h/20+400)
       .attr('fill','white');
   let mouseInSVG = d3.mouse(viz.node())
   textElementIII
@@ -625,11 +701,11 @@ console.log('lol')
   .attr('x',mouseInSVG[0])
   .attr('y',mouseInSVG[1])
   .attr('fill','yellow')
-  .attr('font-size','30px')
+
 })
 .on('mouseout',function(d,i){
   d3.select(this).select('circle')
-  .attr('opacity',1)
+  //.attr('opacity',1)
   .transition()
   .attr('r',4);
 
@@ -665,6 +741,7 @@ else if (count == 5){
   dt2.text('');
   dt3.text('');
   dt4.text('');
+  dt6.text('');
   textElementIII.text('');
   alldata.attr('fill','none')
   .attr('stroke','none');
@@ -672,9 +749,12 @@ else if (count == 5){
   .attr('stroke','none');
   textElement
     .transition()
-    .attr('x',600)
+    .attr('x',w/6)
     //.duration(500)
-    .text('<<<From the chart above, we can also see that the rise in the number of TR R 277 records during the Cold War aligns with the rise of the NASA budget.>>>');
+    .text('From the chart above, we can also see that the rise in the number of TR R 277 records during the Cold War aligns with the rise of the NASA budget.')
+
+
+    ;
 
     xAxisGroup
     .transition()
@@ -723,6 +803,9 @@ else if (count == 5){
         xAxisGroup.attr('opacity',1)
         yAxisGroup.attr('opacity',1)
 
+      moonMapI.attr('fill','none')
+      .attr('stroke','none')
+
 }
 else if (count == 6){
   //dt5.text('');
@@ -734,7 +817,7 @@ moonMap
 .attr('stroke','white');
   textElement
     .transition()
-    .attr('x',660)
+    .attr('x',w/2)
     .duration(500)
     .text("Thank you for your time" );
     textElementII
@@ -756,7 +839,8 @@ moonMap
 
   let textElement = viz.append('text')
       .text("<<<This project intends to illustrate the US's devotion to the Moon landing cause and the tension of the Moon Race by visualizing the The TR R 277 reports.>>>")
-      .attr('x',w/5)
+      .attr('x',w/10)
+      .attr("font-size", 28)
       .attr('y',h-100)
       .attr('class','t')
       .attr('fill','white')
